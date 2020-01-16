@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
+class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      newsData: []
+    }
+  }
+
+componentDidMount() {
+  this.fetchingStories();
+}
+
+fetchingStories () {
+  fetch('http://hn.algolia.com/api/v1/search?query=foo&tags=story')
+  .then((res) => { return res.json() })
+  .then((res) => { console.log(res); this.setState( {newsData: res.hits})})
+  .catch(error => console.log("Parsing failed", error));
+}
+
+
+
+
+  render () {
+    return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        {this.state.newsData.map((item,index) => {
+          return <div key={index}>{item.author}</div>
+        })}
+      </div>
+      
+
     </div>
-  );
+    );
+  }
 }
 
 export default App;
