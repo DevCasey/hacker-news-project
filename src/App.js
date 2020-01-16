@@ -14,7 +14,7 @@ componentDidMount() {
 }
 
 fetchingStories () {
-  fetch('http://hn.algolia.com/api/v1/search?query=foo&tags=story')
+  fetch('http://hn.algolia.com/api/v1/search?tags=front_page')
   .then((res) => { return res.json() })
   .then((res) => { console.log(res); this.setState( {newsData: res.hits})})
   .catch(error => console.log("Parsing failed", error));
@@ -26,9 +26,13 @@ fetchingStories () {
   render () {
     return (
     <div className="App">
-      <div>
-        {this.state.newsData.map((item,index) => {
-          return <div key={index}>{item.author}</div>
+      <div className="news-data">
+        <form>
+          <input id="story-search" placeholder="Search stories here"></input>
+          <button>Search</button>
+        </form>
+          {this.state.newsData.map((item,index) => {
+            return <p key={index}>{item.title}</p>
         })}
       </div>
       
