@@ -1,6 +1,14 @@
-.App {
-  text-align: center;
+#story-search {
+  /* overflow: hidden; */
+  top: 0;
+  width: 45%;
+  height: 30px;
 }
+
+.App {
+  text-align: center; 
+}
+
 
 .App-logo {
   height: 40vmin;
