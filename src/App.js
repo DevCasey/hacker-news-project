@@ -5,15 +5,27 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      newsData: []
+      newsData: [],
+      titleHeader: [],
+      value: ''
     }
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
+  
+
 componentDidMount() {
-  this.fetchingStories();
+  this.fetchingFrontPageStories();
+  this.handleSearch();
 }
 
-fetchingStories () {
+handleSearch = () => {
+
+}
+
+
+
+fetchingFrontPageStories () {
   fetch('http://hn.algolia.com/api/v1/search?tags=front_page')
   .then((res) => { return res.json() })
   .then((res) => { console.log(res); this.setState( {newsData: res.hits})})
@@ -28,12 +40,13 @@ fetchingStories () {
     <div className="App">
       <div className="news-data">
         <form>
-          <input id="story-search" placeholder="Search stories here"></input>
-          <button>Search</button>
+          <input id="story-search" placeholder="Search by title or author" value={this.state.value}></input>
+          <button id="search-button" onClick={this.handleSearch}>Search</button>
         </form>
-          {this.state.newsData.map((item,index) => {
+        
+          {/* {this.state.newsData.map((item,index) => {
             return <p key={index}>{item.title}</p>
-        })}
+        })} */}
       </div>
       
 
