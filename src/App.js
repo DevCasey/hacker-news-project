@@ -12,12 +12,7 @@ class App extends Component {
       
     }
     this.handleSearch = this.handleSearch.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
-    // this.filterForInput = this.filterForInput.bind(this);
     this.handleSubmitForAuthor = this.handleSubmitForAuthor.bind(this);
-    
-    
-    
   }
 
   
@@ -30,7 +25,7 @@ componentDidMount() {
 // Sets 'value' state to what is typed inside of the input field
 handleSearch(event) {
   // event.preventDefault();
-  this.setState( {value: event.target.value} );
+  this.setState( {value: event.target.value.toLowerCase()} );
 }
 
 
@@ -83,7 +78,7 @@ fetchingFrontPageStories () {
           <input 
           type = "text"
           id="story-search" 
-          placeholder="Search front page stories by keywords" 
+          placeholder="Search by Author" 
           value={this.state.value}
           onChange={this.handleSearch}>
           </input>
@@ -104,10 +99,6 @@ fetchingFrontPageStories () {
             </div>
           ))}
         </div>
-        
-          {/* {this.state.newsData.map((item,index) => {
-            return <p key={index}><a href={item.url}>{item.title}</a></p>
-        })} */}
       </div>
       
 
