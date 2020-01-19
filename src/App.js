@@ -6,13 +6,17 @@ class App extends Component {
     super(props)
     this.state = {
       newsData: [],
+      authorName: [],
       titleHeader: '',
       value: '',
-      authorName: ''
+      
     }
     this.handleSearch = this.handleSearch.bind(this);
     // this.handleSubmit = this.handleSubmit.bind(this);
     // this.filterForInput = this.filterForInput.bind(this);
+    this.handleSubmitForAuthor = this.handleSubmitForAuthor.bind(this);
+    
+    
     
   }
 
@@ -20,47 +24,38 @@ class App extends Component {
 
 componentDidMount() {
   this.fetchingFrontPageStories();
-  // this.handleSearch();
+  this.handleSubmitForAuthor();
 }
 
 // Sets 'value' state to what is typed inside of the input field
 handleSearch(event) {
   // event.preventDefault();
   this.setState( {value: event.target.value} );
-  console.log(this.state.value);
-
 }
-
 
 
 handleSubmit = (e) => {
-  const getTitleButtonId = document.getElementById('title-button');
-  const getAuthorButtonId = document.getElementById('author-button');
-  const radioButtonName = document.getElementsByName('filter');
+  const getAuthorRadio = document.getElementById('author-id');
+  const getTitleRadio = document.getElementById('title-id');
   e.preventDefault();
-  
+  if(!getAuthorRadio.checked && !getTitleRadio.checked) {
+    alert("No options Selected");
+  } else if (getAuthorRadio.checked) {
+    console.log("Author Radio checked");
+    this.handleSubmitForAuthor();
+  } else if (getTitleRadio.checked) {
+    console.log("Title radio checked");
+  }
 }
 
-
-
-handleSubmitForAuthor = (e) => {
-  const authorURL = 'http://hn.algolia.com/api/v1/search?tags=story,author_:USERNAME';
-  e.preventDefault();
+// Stores all stories by specific author inside of the authorName state.
+handleSubmitForAuthor = () => {
+  console.log("Accessed this function and this is state" + this.state.value);
+  const authorURL = `http://hn.algolia.com/api/v1/search?tags=story,author_${this.state.value}`;
   fetch(authorURL)
-  .then((res) => {return res.json() })
-  .then((res) => {
-    if(res.hits.title > 0) {
-      this.setState( {authorName: res.hits.author})
-    } else {
-      alert("Author not found")
-    }  
-  })
-
-
+    .then((res) => {return res.json() })
+    .then((res) => { console.log(res); this.setState( {authorName: res.hits}) })
 }
-
-
-
 
 
 fetchingFrontPageStories () {
@@ -81,11 +76,12 @@ fetchingFrontPageStories () {
         <form onSubmit={this.handleSubmit}>
 
           <div id="radio-buttons">
-            <div id="title-button">Title<input name="filter" type="radio"></input></div>
-            <div id="author-button">Author<input name="filter" type="radio"></input></div>
+            <div id="title-button">Title<input id="title-id" name="filter" type="radio"></input></div>
+            <div id="author-button">Author<input id="author-id" name="filter" type="radio"></input></div>
           </div>
           
           <input 
+          type = "text"
           id="story-search" 
           placeholder="Search front page stories by keywords" 
           value={this.state.value}
@@ -95,9 +91,19 @@ fetchingFrontPageStories () {
           <button id="search-button" 
           >Search
           </button>
-
-
         </form>
+
+        <div className="showing-results">
+          {this.state.authorName.map ((author, index) => (
+            <div key={index}>
+              <p>
+                <a href={author.url}>{author.title}</a>
+                <div>Created By: {this.state.value}</div>
+                <div>Date: {author.created_at}</div>
+              </p>
+            </div>
+          ))}
+        </div>
         
           {/* {this.state.newsData.map((item,index) => {
             return <p key={index}><a href={item.url}>{item.title}</a></p>
