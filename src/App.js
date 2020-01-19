@@ -6,12 +6,12 @@ class App extends Component {
     super(props)
     this.state = {
       newsData: [],
-      titleHeader: [],
+      titleHeader: '',
       value: '',
       authorName: ''
     }
     this.handleSearch = this.handleSearch.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
     // this.filterForInput = this.filterForInput.bind(this);
     
   }
@@ -25,27 +25,39 @@ componentDidMount() {
 
 // Sets 'value' state to what is typed inside of the input field
 handleSearch(event) {
+  // event.preventDefault();
   this.setState( {value: event.target.value} );
+  console.log(this.state.value);
+
 }
 
 
-handleSubmit(event) {
-  event.preventDefault();
-  alert(`${this.state.value} was submitted`);
-  let findAuthor = this.state.newsData.title.find(this.state.value) 
-  this.setState({value: ''})
-  // this.filterForInput();
-}
 
-// Starts to filter what is typed in input field and searched within the 'newsData' state.
-// filterForInput() {
-//   console.log("Function Working");
-//   console.log(this.state.newsData);
+handleSubmit = (e) => {
+  const getTitleButtonId = document.getElementById('title-button');
+  const getAuthorButtonId = document.getElementById('author-button');
+  const radioButtonName = document.getElementsByName('filter');
+  e.preventDefault();
   
-// }
+}
 
 
 
+handleSubmitForAuthor = (e) => {
+  const authorURL = 'http://hn.algolia.com/api/v1/search?tags=story,author_:USERNAME';
+  e.preventDefault();
+  fetch(authorURL)
+  .then((res) => {return res.json() })
+  .then((res) => {
+    if(res.hits.title > 0) {
+      this.setState( {authorName: res.hits.author})
+    } else {
+      alert("Author not found")
+    }  
+  })
+
+
+}
 
 
 
@@ -68,6 +80,11 @@ fetchingFrontPageStories () {
 
         <form onSubmit={this.handleSubmit}>
 
+          <div id="radio-buttons">
+            <div id="title-button">Title<input name="filter" type="radio"></input></div>
+            <div id="author-button">Author<input name="filter" type="radio"></input></div>
+          </div>
+          
           <input 
           id="story-search" 
           placeholder="Search front page stories by keywords" 
@@ -83,7 +100,7 @@ fetchingFrontPageStories () {
         </form>
         
           {/* {this.state.newsData.map((item,index) => {
-            return <p key={index}>{item.title}</p>
+            return <p key={index}><a href={item.url}>{item.title}</a></p>
         })} */}
       </div>
       
